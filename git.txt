@@ -1,0 +1,12 @@
+# 1. Ver cambios
+git status
+# Output: modified: app.py, nuevo_archivo.txt (en rojo)
+
+# 2. Añadir cambios
+git add .
+
+# 3. Crear commit
+git commit -m "Mejoras en la lógica de app.py y nuevo archivo"
+
+# 4. Subir a GitHub
+git push origin main
