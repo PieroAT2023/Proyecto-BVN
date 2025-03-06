@@ -1,0 +1,170 @@
+/* Estilos Generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Altura mínima para evitar problemas de scroll */
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto; /* Habilitar scroll vertical */
+    background-color: #fff;
+    max-width: 100%; /* Asegurar que no exceda el ancho de la pantalla */
+    box-sizing: border-box; /* Incluir padding en el cálculo del ancho */
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logout-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.two-columns-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Dos columnas responsivas */
+    gap: 20px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-section {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaciado reducido entre los campos */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive */
+    gap: 15px;
+    align-items: start;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaciado aumentado entre label e input */
+}
+
+label {
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="text"],
+input[type="date"],
+select {
+    padding: 8px; /* Inputs más pequeños */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px; /* Fuente más pequeña */
+    transition: border-color 0.3s ease;
+}
+
+input[type="date"] {
+    width: 150px; /* Inputs de fecha más compactos */
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    padding: 8px; /* Botones más pequeños */
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.add-dispositivo,
+.submit-btn {
+    align-self: center;
+    width: 100%;
+    max-width: 200px;
+}
+
+.remove_dispositivo {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remove_dispositivo:hover {
+    background-color: #b02a37;
+}
+
+.empleado-fields {
+    display: none;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+/* Media Query para Pantallas Pequeñas */
+@media (max-width: 768px) {
+    .two-columns-container {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+    }
+
+    .form-section {
+        padding: 15px; /* Reducir el padding en pantallas pequeñas */
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+        font-size: 12px; /* Reducir el tamaño de fuente en pantallas pequeñas */
+    }
+}
+.isquierda{
+    margin-right: 80%;
+}

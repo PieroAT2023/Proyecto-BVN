@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header >
+            <h1>Generador de Documentos PDF</h1>
+            <p class="isquierda">Bienvenido, {{ session['user_full_name'] }}! </p>
+            
+        </header>
+
+        <form id="pdfForm" class="form">
+            <!-- Contenedor de 2 Columnas -->
+            <div class="two-columns-container">
+                <!-- Columna Izquierda -->
+                <div class="column">
+                    <!-- Sección 1: Datos Personales -->
+                    <section class="form-section">
+                        <h2>Datos Personales</h2>
+                        <div class="vertical-container">
+                            <div class="form-group">
+                                <label for="dni">DNI:</label>
+                                <input type="text" id="dni" name="dni" 
+                                    pattern="[0-9]{8}" 
+                                    title="Ingrese un DNI válido de 8 dígitos numéricos"
+                                    maxlength="8"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Nombre:</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Apellido:</label>
+                                <input type="text" id="last_name" name="last_name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tipo_persona">Tipo de Colaborador:</label>
+                                <select id="tipo_persona" name="tipo_persona" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Empleado">Empleado</option>
+                                    <option value="Visitante">Visitante</option>
+                                </select>
+                            </div>
+                            <div id="Empleado_fields" class="empleado-fields">
+                                <div class="form-group">
+                                    <label for="area">Área:</label>
+                                    <input type="text" id="area" name="area">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cargo">Cargo:</label>
+                                    <input type="text" id="cargo" name="cargo">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="unidad">Unidad:</label>
+                                <select id="unidad" name="unidad" required>
+                                    <option value="Brocal">Brocal</option>
+                                    <option value="Rio Seco">Río Seco</option>
+                                    <option value="Uchucchacua">Uchucchacua</option>
+                                    <option value="Julcani">Julcaní</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="column">
+                    <!-- Sección 2: Dispositivos -->
+                    <section class="form-section">
+                        <h2>Dispositivos</h2>
+                        <div id="dispositivos_container" class="dispositivos-container">
+                            <div class="dispositivo form-group">
+                                <div class="grid-container">
+                                    <div class="form-group">
+                                        <label>Dispositivo:</label>
+                                        <input type="text" name="dispositivo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Marca:</label>
+                                        <input type="text" name="marca" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Modelo:</label>
+                                        <input type="text" name="modelo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Número de Serie:</label>
+                                        <input type="text" name="numero_serie" required>
+                                    </div>
+                                    <button type="button" class="remove_dispositivo">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <button type="button" id="add_dispositivo" class="add-dispositivo">Agregar Dispositivo</button>
+                    </section>
+
+                    <!-- Sección 3: Fechas -->
+                    <section class="form-section">
+                        <h2>Fecha de Vigencia del Permiso</h2>
+                        <div class="vertical-container">
+                            <div class="form-group">
+                                <label for="fecha_inicio">Fecha de Inicio:</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha_fin">Fecha de Fin:</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" required>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- Botón de Envío -->
+            <button type="submit" class="submit-btn">Generar PDF</button>
+            <a href="{{ url_for('logout') }}" class="logout-link">Cerrar Sesión</a>
+        </form>
+        
+    </div>
+
+    <!-- Script para manejar el envío del formulario -->
+    <script>
+        // Mostrar/Ocultar campos de Trabajador con animación
+        document.getElementById('tipo_persona').addEventListener('change', function() {
+            const empleadoFields = document.getElementById('Empleado_fields');
+            if (this.value === 'Empleado') {
+                empleadoFields.style.display = 'block';
+                setTimeout(() => {
+                    empleadoFields.style.opacity = '1';
+                    empleadoFields.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                empleadoFields.style.opacity = '0';
+                empleadoFields.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    empleadoFields.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        // Agregar dispositivo
+        document.getElementById('add_dispositivo').addEventListener('click', function() {
+            const container = document.getElementById('dispositivos_container');
+            const newDispositivo = document.createElement('div');
+            newDispositivo.classList.add('dispositivo', 'form-group');
+            newDispositivo.innerHTML = `
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label>Dispositivo:</label>
+                        <input type="text" name="dispositivo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Marca:</label>
+                        <input type="text" name="marca" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Modelo:</label>
+                        <input type="text" name="modelo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Serie:</label>
+                        <input type="text" name="numero_serie" required>
+                    </div>
+                    <button type="button" class="remove_dispositivo">Eliminar</button>
+                </div>
+            `;
+            container.appendChild(newDispositivo);
+        });
+
+        // Eliminar dispositivo
+        document.getElementById('dispositivos_container').addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove_dispositivo')) {
+                event.target.parentElement.parentElement.remove();
+            }
+        });
+
+        // Enviar formulario
+        document.getElementById('pdfForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar el envío tradicional del formulario
+            const formData = new FormData(this);
+            const dispositivos = [];
+            document.querySelectorAll('.dispositivo').forEach((dispositivoDiv) => {
+                const dispositivo = dispositivoDiv.querySelector('input[name="dispositivo"]').value;
+                const marca = dispositivoDiv.querySelector('input[name="marca"]').value;
+                const modelo = dispositivoDiv.querySelector('input[name="modelo"]').value;
+                const numero_serie = dispositivoDiv.querySelector('input[name="numero_serie"]').value;
+                dispositivos.push({ dispositivo, marca, modelo, numero_serie });
+            });
+            formData.append('dispositivos', JSON.stringify(dispositivos));
+            fetch('/index', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    window.open(`/pdf/${data.filename}`, '_blank');
+                    document.getElementById('pdfForm').reset();
+                    document.querySelectorAll('.dispositivo').forEach((dispositivoDiv, index) => {
+                        if (index > 0) dispositivoDiv.remove();
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+    <script>
+        function consultarDNI(dni) {
+            if (dni.length === 8) {
+                fetch(`/consultar_dni/${dni}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.nombres) {
+                            document.getElementById('name').value = data.nombres.split(' ')[0];
+                            document.getElementById('last_name').value = data.apellidoPaterno + ' ' + data.apellidoMaterno;
+                        } else {
+                            alert('DNI no encontrado en la API. Complete los campos manualmente.');
+                        }
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
